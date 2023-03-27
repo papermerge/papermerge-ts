@@ -8,6 +8,7 @@ export default function Home() {
         <title>Home</title>
       </Head>
       <h1>Home</h1>
+      <button className="btn btn-primary m-3">Button Primary</button>
     </Layout>
   );
 }
