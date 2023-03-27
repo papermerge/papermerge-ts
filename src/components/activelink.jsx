@@ -18,7 +18,7 @@ function ActiveLink({ children, href, className }) {
     <a href={href} className={new_className} onClick={handleClick}>
       {children}
     </a>
-  )
+  );
 }
 
 export default ActiveLink
