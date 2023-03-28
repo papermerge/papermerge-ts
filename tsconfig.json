@@ -18,6 +18,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/components/layout.jsx", "src/components/activelink.jsx", "src/components/central_bar.jsx"],
   "exclude": ["node_modules"]
 }

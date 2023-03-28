@@ -25,3 +25,16 @@ img {
   max-width: 100%;
   display: block;
 }
+
+main {
+  display: flex;
+  flex-wrap: nowrap;
+  height: 100vh;
+  max-height: 100vh;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+body {
+  background-color: #e9ecef;
+}
