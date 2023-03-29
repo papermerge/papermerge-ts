@@ -4,7 +4,7 @@ import styles from './layout.module.css'
 import Sidebar from './sidebar/sidebar';
 
 
-export default function Layout({ children }) {
+function Layout({ children }) {
   return (
     <main className={styles.main}>
       <Sidebar />
@@ -14,3 +14,7 @@ export default function Layout({ children }) {
     </main>
   );
 }
+
+Layout.requires_auth = true;
+
+export default Layout;

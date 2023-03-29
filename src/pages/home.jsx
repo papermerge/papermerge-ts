@@ -1,7 +1,7 @@
 import Head from "next/head";
 import Layout from '../components/layout';
 
-export default function Home() {
+function Home() {
   return (
     <Layout>
       <Head>
@@ -12,3 +12,7 @@ export default function Home() {
     </Layout>
   );
 }
+
+Home.requires_auth = true;
+
+export default Home;

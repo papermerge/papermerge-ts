@@ -6,11 +6,11 @@ import Button from "./button";
 export default function Login() {
   return (
     <form>
-      <div class="mb-3 form-floating">
+      <div className="mb-3 form-floating">
         <Username />
       </div>
 
-    <div class="mb-3 form-floating">
+    <div className="mb-3 form-floating">
       <Password />
     </div>
 

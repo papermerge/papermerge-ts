@@ -5,7 +5,7 @@ export default function Username() {
       <input id='identification'
         className="form-control"
         placeholder="Username or email" />
-      <label for="identification" className="form-label">
+      <label htmlFor="identification" className="form-label">
         Username or Email
       </label>
     </>
