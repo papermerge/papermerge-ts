@@ -52,6 +52,7 @@ export default function Login() {
     } catch(err: any) {
       const error = err as AxiosError;
       setErrorMessage(error.message);
+      console.error(error.toJSON())
     } finally {
       setInProgress(false);
     }

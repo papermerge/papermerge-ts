@@ -6,7 +6,7 @@ type Args = {
 function Error({message}: Args) {
   return (
     <>
-      <div className='text-danger'>
+      <div className='text-danger m-2'>
         {message}
       </div>
     </>

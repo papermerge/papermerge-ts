@@ -24,13 +24,26 @@ export const AuthProvider = ({children}: {children: JSX.Element}) => {
   const [isLoading, setLoading] = useState(false);
   const router = useRouter();
 
-  const authenticate = async (email: string, password: string) => {
-    const { data: token } = await api.post('auth/login', { email, password })
-    if (token) {
-        console.log("Got token")
-        Cookies.set('token', token, { expires: 60 })
-        api.defaults.headers.Authorization = `Bearer ${token.token}`
-        const { data: user } = await api.get('users/me')
+  const authenticate = async (username: string, password: string) => {
+    const params = new URLSearchParams();
+    params.append('username', username);
+    params.append('password', password);
+    let data = {username, password};
+
+    const { data: { access_token } } = await api.post('auth/token',
+      data,
+      {
+        headers: {
+          'content-type': 'application/x-www-form-urlencoded'
+        }
+      }
+    );
+    if (access_token) {
+        console.log(`Got token ${access_token}`);
+
+        Cookies.set('token', access_token, { expires: 60 })
+        api.defaults.headers.Authorization = `Bearer ${access_token}`
+        const { data: user } = await api.get('users/me');
         setUser(user)
         console.log("Got user", user)
     }
