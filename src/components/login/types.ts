@@ -4,3 +4,6 @@ export type InputProps = {
   name: string;
   placeholder: string;
 }
+
+
+export type ClickEvent = React.MouseEvent<HTMLButtonElement, MouseEvent>;

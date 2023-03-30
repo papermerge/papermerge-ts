@@ -14,7 +14,8 @@ import type { AuthContextType } from '@/types';
 const AuthContext = createContext<AuthContextType>({
   isAuthenticated: false,
   isLoading: false,
-  user: null
+  user: null,
+  authenticate: () => {}
 });
 
 
@@ -23,7 +24,7 @@ export const AuthProvider = ({children}: {children: JSX.Element}) => {
   const [isLoading, setLoading] = useState(false);
   const router = useRouter();
 
-  const login = async (email: string, password: string) => {
+  const authenticate = async (email: string, password: string) => {
     const { data: token } = await api.post('auth/login', { email, password })
     if (token) {
         console.log("Got token")
@@ -64,7 +65,7 @@ export const AuthProvider = ({children}: {children: JSX.Element}) => {
   let context_value: AuthContextType = {
     isAuthenticated: !!user,
     user,
-    login,
+    authenticate,
     logout,
     isLoading
   };

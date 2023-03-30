@@ -1,5 +1,5 @@
-import Logo from "../components/login/logo"
-import Login from "../components/login/login"
+import Logo from "../components/login/logo";
+import Login from "../components/login/login";
 import styles from "./login.module.scss";
 
 

@@ -9,7 +9,7 @@ export type AuthContextType = {
   isAuthenticated: boolean;
   isLoading: boolean;
   user: User | null;
-  login?: (email: string, password: string) => void;
+  authenticate: (email: string, password: string) => void;
   logout?: (redirect: string) => void;
 }
 
