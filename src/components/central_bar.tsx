@@ -1,7 +1,8 @@
 import styles from './layout.module.css'
+import type { SimpleComponentArgs } from '@/types';
 
 
-export default function CentralBar({children}) {
+export default function CentralBar({children}: SimpleComponentArgs) {
   return (
     <div className={styles.central_bar}>
       <nav className='navbar navbar-expand nav-top'>

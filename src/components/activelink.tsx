@@ -1,11 +1,18 @@
 import { useRouter } from 'next/router'
+import React, { MouseEventHandler } from 'react';
 
 
-function ActiveLink({ children, href, className }) {
+type Args = {
+  children: React.ReactNode;
+  href: string;
+  className: string;
+}
+
+function ActiveLink({ children, href, className }: Args) {
   const router = useRouter()
   let new_className = className;
 
-  const handleClick = (e) => {
+  const handleClick = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault()
     router.push(href)
   }
@@ -21,4 +28,4 @@ function ActiveLink({ children, href, className }) {
   );
 }
 
-export default ActiveLink
+export default ActiveLink;
