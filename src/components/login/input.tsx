@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import type { OnChangeType } from './types';
+import type { InputProps } from './types';
 
 
-export default function Password({onchange}: OnChangeType) {
+export default function Input({onchange, ...props}: InputProps) {
   const [value, setValue] = useState('');
 
   const changeHandle = (event: React.SyntheticEvent) => {
@@ -13,16 +13,14 @@ export default function Password({onchange}: OnChangeType) {
 
   return (
     <>
-      <input id='password'
+      <input
         className="form-control"
-        placeholder="Enter Password"
-        name="password"
         value={value}
         onChange={changeHandle}
-        type="password" />
-      <label htmlFor="password" className="form-label">
-        Password
-      </label>
+        type={props.type}
+        name={props.name}
+        placeholder={props.placeholder}
+      />
     </>
   );
 }

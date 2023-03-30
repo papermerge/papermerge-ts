@@ -1,8 +1,7 @@
 import { useState } from 'react';
 
-import Username from "./username";
-import Password from "./password";
 import Button from "./button";
+import Input from "./input";
 
 
 export default function Login() {
@@ -17,11 +16,25 @@ export default function Login() {
   return (
     <form>
       <div className="mb-3 form-floating">
-        <Username onchange={(value: string) => { setUsername(value);}}/>
+        <Input
+          onchange={(value: string) => { setUsername(value);}}
+          name="username"
+          type="text"
+          placeholder="Username or email" />
+        <label className="form-label">
+          Username
+        </label>
       </div>
 
       <div className="mb-3 form-floating">
-        <Password onchange={(value: string) => { setPassword(value);}} />
+        <Input
+          onchange={(value: string) => { setPassword(value);}}
+          name="password"
+          type="password"
+          placeholder="" />
+        <label className="form-label">
+          Password
+        </label>
       </div>
 
       <Button onClick={handleSubmit} />
