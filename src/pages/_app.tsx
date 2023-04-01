@@ -3,21 +3,14 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 
 import '@/styles/globals.scss'
 import type { AppProps } from 'next/app'
-import { AuthProvider } from '../contexts/auth'
-import ProtectedRoute from '../components/protected_route';
+import { SessionProvider } from "next-auth/react"
 
-
-function App({ Component, pageProps }: AppProps) {
-  // routes which don't need authentication
-  const public_routes: Array<string> = ['/login'];
-
+function App({ Component, pageProps: { session, ...pageProps} }: AppProps) {
   return (
     <>
-    <AuthProvider>
-      <ProtectedRoute public_routes={public_routes}>
+     <SessionProvider session={session}>
         <Component {...pageProps} />
-      </ProtectedRoute>
-    </AuthProvider>
+    </SessionProvider>
     </>
   )
 }

@@ -1,21 +1,23 @@
+import { useSession } from 'next-auth/react';
 
 import CentralBar from './central_bar';
-import styles from './layout.module.css'
+import { default as layout_styles } from './layout.module.css'
 import Sidebar from './sidebar/sidebar';
-
 import type { SimpleComponentArgs } from '@/types';
 
+
 function Layout({ children }: SimpleComponentArgs) {
+
+  const { data: session } = useSession();
+
   return (
-    <main className={styles.main}>
+    <main className={layout_styles.main}>
       <Sidebar />
-      <CentralBar>
+      <CentralBar username={session?.username}>
         {children}
       </CentralBar>
     </main>
   );
 }
-
-Layout.requires_auth = true;
 
 export default Layout;

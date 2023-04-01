@@ -13,6 +13,4 @@ function Home() {
   );
 }
 
-Home.requires_auth = true;
-
 export default Home;

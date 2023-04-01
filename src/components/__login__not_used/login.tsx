@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { AxiosError } from "axios";
+import { signIn } from 'next-auth/react';
 
 import { useAuth } from '@/contexts/auth';
 import Button from "./button";
 import Input from "./input";
 import Error from './error';
 import { ClickEvent } from './types';
+
 
 
 function credentials_provided(username: string, password: string): boolean {
@@ -41,14 +43,19 @@ export default function Login() {
   const [errorMessage, setErrorMessage] = useState('');
   const [inProgress, setInProgress] = useState(false);
   const [isEnabled, setIsEnabled] = useState(false);
-  const { authenticate } = useAuth();
 
   const handleSubmit = async (event: ClickEvent) => {
     event.preventDefault();
     setErrorMessage('');
     setInProgress(true);
     try {
-      let response = await authenticate(username, password);
+      let response = await signIn(
+        "credentials", {
+          username: username,
+          password: password,
+          callbackUrl: "/home",
+          redirect: true
+        });
     } catch(err: any) {
       const error = err as AxiosError;
       setErrorMessage(error.message);
