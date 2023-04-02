@@ -1,25 +1,18 @@
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-
 import '@/styles/globals.scss'
 import type { AppProps } from 'next/app'
-import { AuthProvider } from '../contexts/auth'
-import ProtectedRoute from '../components/protected_route';
+import { UserProvider } from '@/contexts/user';
 
 
 function App({ Component, pageProps }: AppProps) {
-  // routes which don't need authentication
-  const public_routes: Array<string> = ['/login'];
-
   return (
     <>
-    <AuthProvider>
-      <ProtectedRoute public_routes={public_routes}>
+      <UserProvider>
         <Component {...pageProps} />
-      </ProtectedRoute>
-    </AuthProvider>
+      </UserProvider>
     </>
-  )
+  );
 }
 
 export default App;

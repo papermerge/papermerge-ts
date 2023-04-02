@@ -11,6 +11,7 @@ type Args = {
 
 
 function ProtectedRoute({ public_routes, children }: Args): JSX.Element {
+
   const router = useRouter();
   const { isAuthenticated, isLoading } = useAuth();
 
@@ -30,6 +31,7 @@ function ProtectedRoute({ public_routes, children }: Args): JSX.Element {
   if ((isLoading || !isAuthenticated) && path_is_protected) {
     return <LoadingScreen />;
   }
+
 
   return children;
 }

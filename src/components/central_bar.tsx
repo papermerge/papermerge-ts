@@ -1,8 +1,12 @@
 import styles from './layout.module.css'
 import type { SimpleComponentArgs } from '@/types';
 
+import { useUser } from '@/contexts/user';
+
 
 export default function CentralBar({children}: SimpleComponentArgs) {
+  const user_context = useUser();
+
   return (
     <div className={styles.central_bar}>
       <nav className='navbar navbar-expand nav-top'>
@@ -16,6 +20,7 @@ export default function CentralBar({children}: SimpleComponentArgs) {
       </nav>
       <div className='container-fluid'>
         <div className='d-flex row'>
+          {user_context.user?.username}
           {children}
         </div>
       </div>

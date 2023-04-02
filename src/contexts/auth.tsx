@@ -23,6 +23,7 @@ export const AuthProvider = ({children}: {children: JSX.Element}) => {
   const [user, setUser] = useState(null);
   const [isLoading, setLoading] = useState(false);
   const router = useRouter();
+  let token = Cookies.get('token');
 
   const authenticate = async (username: string, password: string) => {
     const params = new URLSearchParams();
@@ -59,7 +60,7 @@ export const AuthProvider = ({children}: {children: JSX.Element}) => {
 
   useEffect(() => {
     async function loadUserFromCookies() {
-      const token = Cookies.get('token')
+      let token = Cookies.get('token')
       if (token) {
           console.log("Got a token in the cookies, let's see if it is valid")
           api.defaults.headers.Authorization = `Bearer ${token}`
@@ -76,7 +77,7 @@ export const AuthProvider = ({children}: {children: JSX.Element}) => {
 
 
   let context_value: AuthContextType = {
-    isAuthenticated: !!user,
+    isAuthenticated: !!token,
     user,
     authenticate,
     logout,

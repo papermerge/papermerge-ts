@@ -3,14 +3,15 @@ import React from 'react';
 
 export type User = {
   username: string;
+  email: string;
+  home_folder_id: string;
+  inbox_folder_id: string;
 }
 
-export type AuthContextType = {
-  isAuthenticated: boolean;
+export type UserContextType = {
   isLoading: boolean;
+  isError: boolean;
   user: User | null;
-  authenticate: (email: string, password: string) => void;
-  logout?: (redirect: string) => void;
 }
 
 export type SimpleComponentArgs = {
