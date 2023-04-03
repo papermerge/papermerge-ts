@@ -1,0 +1,14 @@
+.breadcrumb {
+  display: flex;
+  list-style: none;
+
+  li {
+    button {
+      padding-right: 0;
+      text-decoration: none;
+    }
+    button:hover {
+      text-decoration: underline;
+    }
+  }
+}
