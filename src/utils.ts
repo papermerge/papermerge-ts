@@ -32,3 +32,16 @@ export function getNode(node_id: string) {
     isError: error
   }
 }
+
+
+export function is_empty<T extends{length: number}>(value: T[]): boolean {
+  if (!value) {
+    return true;
+  }
+
+  if (value.length == 0) {
+    return true;
+  }
+
+  return false;
+}

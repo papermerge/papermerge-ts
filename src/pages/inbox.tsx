@@ -12,7 +12,6 @@ export default function Inbox() {
       <Head>
         <title>Inbox</title>
       </Head>
-      <h1>Inbox</h1>
       {user_context?.user.inbox_folder_id}
     </Layout>
   );

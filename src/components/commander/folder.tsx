@@ -4,6 +4,7 @@ type Args = {
   onClick: (node_id: string) => void;
 }
 
+
 function Folder({node, onClick}: Args) {
 
   const onclick = () => {
@@ -11,7 +12,10 @@ function Folder({node, onClick}: Args) {
   }
 
   return (
-    <a onClick={onclick}>F {node.title}</a>
+    <div className="node folder">
+      <div className="icon folder"></div>
+      <div className="title" onClick={onclick}>{node.title}</div>
+    </div>
   );
 
 }

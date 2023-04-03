@@ -1,6 +1,6 @@
 
 import CentralBar from './central_bar';
-import styles from './layout.module.css'
+import styles from './layout.module.css';
 import Sidebar from './sidebar/sidebar';
 import useSWR from 'swr';
 import Cookies from 'js-cookie';

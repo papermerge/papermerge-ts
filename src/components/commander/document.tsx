@@ -11,9 +11,11 @@ function Document({node, onClick}: Args) {
   }
 
   return (
-    <a onClick={onclick}>D {node.title}</a>
+    <div className="node document">
+      <div className="icon document"></div>
+      <div className="title" onClick={onclick}>{node.title}</div>
+    </div>
   );
-
 }
 
 export default Document;

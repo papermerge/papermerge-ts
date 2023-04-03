@@ -19,8 +19,6 @@ function Home() {
       <Head>
         <title>Home</title>
       </Head>
-      <h1>Home</h1>
-
       <Commander node_id={node_id} onNodeClick={onNodeClick} />
     </Layout>
   );
