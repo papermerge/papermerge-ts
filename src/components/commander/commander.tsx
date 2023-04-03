@@ -66,7 +66,6 @@ type Args = {
 
 function Commander({node_id, onNodeClick}: Args) {
 
-  //let {data, error, isLoading} = useSWR(`/nodes/${node_id}`, fetcher);
   let [nodes_list, breadcrumb] = useNodeList(node_id);
   let nodes;
 
