@@ -62,7 +62,6 @@ function useNodeListPlus(node_id: string): NodeListPlusT  {
   }
 
   useEffect(() => {
-    console.log('useEffect');
 
     try {
       prom = Promise.all([
@@ -75,11 +74,18 @@ function useNodeListPlus(node_id: string): NodeListPlusT  {
 
     if (node_id) {
       let ignore = false;
-      prom.then((json: NodeListPlusT) => {
-        if (!ignore) {
-          setData(json);
-        }
-      }).catch((error: string) => setData([]));
+
+      prom
+      .then(
+        (json: NodeListPlusT) => {
+          if (!ignore) {
+            setData(json);
+          }
+        })
+      .catch(
+        () => { setData([]); }
+      );
+
       return () => {
         ignore = true;
       };
@@ -89,12 +95,10 @@ function useNodeListPlus(node_id: string): NodeListPlusT  {
   return data;
 }
 
-
 type Args = {
   node_id: string;
   onNodeClick: (node_id: string) => void;
 }
-
 
 function Commander({node_id, onNodeClick}: Args) {
 

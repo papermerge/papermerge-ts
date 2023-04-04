@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Head from "next/head";
 import Layout from '../components/layout';
 import Commander from '../components/commander/commander';
@@ -8,11 +8,11 @@ import { useUser } from "@/contexts/user";
 
 function Home() {
   const user_context = useUser();
-  const [ node_id, set_node_id ] = useState(null);
+  const [ node_id, set_node_id ] = useState('');
 
   useEffect( () => {
     if (!node_id) {
-      set_node_id(user_context.user?.home_folder_id);
+      set_node_id(user_context.user?.home_folder_id || '');
     }
   }, [user_context.user]);
 
