@@ -34,7 +34,7 @@ export function getNode(node_id: string) {
 }
 
 
-export function is_empty<T extends{length: number}>(value: T[]): boolean {
+export function is_empty<T>(value: T[]): boolean {
   if (!value) {
     return true;
   }

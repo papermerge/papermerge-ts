@@ -10,6 +10,36 @@ import { is_empty } from "@/utils";
 import { useState, useEffect } from 'react';
 
 
+type CType = "folder" | "document";
+
+type BreadcrumbItemType = [string, string];
+
+type BreadcrumbType = Array<BreadcrumbItemType>;
+
+
+type NodeType = {
+  id: string
+  ctype: CType;
+  parent_id: string | null;
+  title: string;
+  user_id: string;
+  update_at: string;
+}
+
+type FolderType = NodeType & {
+  breadcrumb: BreadcrumbType;
+}
+
+type NodeResultType = {
+  items: NodeType[];
+  num_pages: number;
+  page_number: number;
+  per_page: number;
+}
+
+type NodeListPlusT = [NodeResultType, FolderType] | [];
+
+
 export const fetcher = (url:string) => {
   const token = Cookies.get('token');
   const headers = {
@@ -22,32 +52,34 @@ export const fetcher = (url:string) => {
 }
 
 
-function useNodeList(node_id: string) {
-  let [data, setData] = useState([]);
+function useNodeListPlus(node_id: string): NodeListPlusT  {
+  let [data, setData] = useState<NodeListPlusT>([]);
   let prom: any;
 
   if (!node_id) {
     setData([]);
-    return;
-  }
-
-  try {
-    prom = Promise.all([
-      fetcher(`/nodes/${node_id}`),
-      fetcher(`/folders/${node_id}`)
-    ]);
-  } catch (error) {
-    setData([]);
+    return [];
   }
 
   useEffect(() => {
+    console.log('useEffect');
+
+    try {
+      prom = Promise.all([
+        fetcher(`/nodes/${node_id}`),
+        fetcher(`/folders/${node_id}`)
+      ]);
+    } catch (error) {
+      setData([]);
+    }
+
     if (node_id) {
       let ignore = false;
-      prom.then(json => {
+      prom.then((json: NodeListPlusT) => {
         if (!ignore) {
           setData(json);
         }
-      }).catch(error => setData([]));
+      }).catch((error: string) => setData([]));
       return () => {
         ignore = true;
       };
@@ -66,10 +98,8 @@ type Args = {
 
 function Commander({node_id, onNodeClick}: Args) {
 
-  let [nodes_list, breadcrumb] = useNodeList(node_id);
+  let [nodes_list, breadcrumb]: NodeListPlusT = useNodeListPlus(node_id);
   let nodes;
-
-  console.log("breadcrumb", breadcrumb);
 
   if (nodes_list) {
     let items = nodes_list.items;
@@ -88,7 +118,7 @@ function Commander({node_id, onNodeClick}: Args) {
 
     return (
       <>
-        <Breadcrumb path={breadcrumb.breadcrumb} onClick={onNodeClick} />
+        {breadcrumb && <Breadcrumb path={breadcrumb.breadcrumb} onClick={onNodeClick} />}
         {nodes}
       </>
     )
