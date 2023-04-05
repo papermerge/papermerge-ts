@@ -189,6 +189,7 @@ function Commander({node_id, onNodeClick}: Args) {
         <div>
           <NewFolderModal
             show={newFolderModalShow}
+            parent_id={node_id}
             onHide={() => setNewFolderModalShow(false)} />
         </div>
       </>

@@ -1,4 +1,4 @@
-import { FormEvent, useState } from 'react';
+import { useState } from 'react';
 
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
@@ -9,6 +9,12 @@ import React, { ChangeEvent } from 'react';
 type Args = {
   onHide: () => void;
   show: boolean;
+  parent_id: string;
+}
+
+async function create_new_folder(title: string, parent_id: string) {
+  console.log("Sending request for creating new folder");
+  console.log(`title=${title} parent_id=${parent_id}`);
 }
 
 function validate_title(value: string): boolean {
@@ -23,8 +29,8 @@ function validate_title(value: string): boolean {
   return true;
 }
 
-const NewFolderModal = ({show, onHide}: Args) => {
-  const [new_title, setNewTitle] = useState('');
+const NewFolderModal = ({show, onHide, parent_id}: Args) => {
+  const [title, setTitle] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [inProgress, setInProgress] = useState(false);
   const [isEnabled, setIsEnabled] = useState(false);
@@ -32,13 +38,20 @@ const NewFolderModal = ({show, onHide}: Args) => {
   const handleTitleChanged = (event: ChangeEvent<HTMLInputElement>) => {
     let value = event.currentTarget.value;
 
-    setNewTitle(value);
+    setTitle(value);
     setErrorMessage('');
     setIsEnabled(validate_title(value))
   }
 
-  const handleSubmit = (event: FormEvent) => {
-    console.log(`Form submitted ${new_title}`);
+  const handleSubmit = async () => {
+    console.log(`Form submitted ${title}`);
+    let response = await create_new_folder(title, parent_id);
+    onHide();
+  }
+
+  const handleCancel = () => {
+    setTitle('');
+    setErrorMessage('');
     onHide();
   }
 
@@ -50,17 +63,18 @@ const NewFolderModal = ({show, onHide}: Args) => {
       animation={false}>
       <Modal.Header closeButton onClick={onHide}>
         <Modal.Title id="contained-modal-title-vcenter">
-          New Folder
+          Create Folder
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form.Label htmlFor="title">Title</Form.Label>
+        <Form.Label htmlFor="title">Folder Title</Form.Label>
         <Form.Control
           aria-describedby="new title"
           onChange={handleTitleChanged} />
       </Modal.Body>
       <Modal.Footer>
-        <Button onClick={handleSubmit} disabled={!isEnabled}>Close</Button>
+        <Button variant='secondary' onClick={handleCancel}>Cancel</Button>
+        <Button onClick={handleSubmit} disabled={!isEnabled}>Create</Button>
       </Modal.Footer>
     </Modal>
   );
