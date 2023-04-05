@@ -5,6 +5,8 @@ import Folder from "./folder";
 import Document from "./document";
 import EmptyFolder from "./empty_folder";
 import Breadcrumb from '../breadcrumb/breadcrumb';
+import Button from 'react-bootstrap/Button';
+import NewFolderModal from "../modals/new_folder";
 
 import { is_empty } from "@/utils";
 import { useState, useEffect } from 'react';
@@ -142,7 +144,7 @@ type Args = {
 }
 
 function Commander({node_id, onNodeClick}: Args) {
-
+  const [ newFolderModalShow, setNewFolderModalShow ] = useState(false);
   let {
     is_loading,
     error,
@@ -168,6 +170,12 @@ function Commander({node_id, onNodeClick}: Args) {
 
     return (
       <>
+        <div>
+          <Button variant='light'
+            onClick={() => setNewFolderModalShow(true)}>
+            <i className="bi bi-pencil"></i>
+          </Button>
+        </div>
         {
           breadcrumb
             &&
@@ -177,6 +185,12 @@ function Commander({node_id, onNodeClick}: Args) {
             is_loading={is_loading} />
         }
         {nodes}
+
+        <div>
+          <NewFolderModal
+            show={newFolderModalShow}
+            onHide={() => setNewFolderModalShow(false)} />
+        </div>
       </>
     )
   }
