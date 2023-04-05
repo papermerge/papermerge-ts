@@ -39,6 +39,13 @@ type NodeResultType = {
 
 type NodeListPlusT = [NodeResultType, FolderType] | [];
 
+type State<T> = {
+  is_loading: boolean;
+  loading_id: string | null;
+  error: unknown;
+  data: T;
+}
+
 
 export const fetcher = (url:string) => {
   const token = Cookies.get('token');
@@ -52,16 +59,30 @@ export const fetcher = (url:string) => {
 }
 
 
-function useNodeListPlus(node_id: string): NodeListPlusT  {
-  let [data, setData] = useState<NodeListPlusT>([]);
+function useNodeListPlus(node_id: string): State<NodeListPlusT>  {
+  const initial_state: State<NodeListPlusT> = {
+    is_loading: true,
+    loading_id: node_id,
+    error: null,
+    data: []
+  };
+  let [data, setData] = useState<State<NodeListPlusT>>(initial_state);
   let prom: any;
 
   if (!node_id) {
-    setData([]);
-    return [];
+    setData(initial_state);
+    return initial_state;
   }
 
   useEffect(() => {
+
+    const loading_state: State<NodeListPlusT> = {
+      is_loading: true,
+      loading_id: node_id,
+      error: null,
+      data: data.data
+    };
+    setData(loading_state);
 
     try {
       prom = Promise.all([
@@ -69,7 +90,13 @@ function useNodeListPlus(node_id: string): NodeListPlusT  {
         fetcher(`/folders/${node_id}`)
       ]);
     } catch (error) {
-      setData([]);
+      let error_state: State<NodeListPlusT> = {
+        is_loading: false,
+        loading_id: null,
+        error: error,
+        data: data.data
+      };
+      setData(error_state);
     }
 
     if (node_id) {
@@ -79,11 +106,25 @@ function useNodeListPlus(node_id: string): NodeListPlusT  {
       .then(
         (json: NodeListPlusT) => {
           if (!ignore) {
-            setData(json);
+            let ready_state: State<NodeListPlusT> = {
+              is_loading: false,
+              loading_id: null,
+              error: null,
+              data: json
+            };
+            setData(ready_state);
           }
         })
       .catch(
-        () => { setData([]); }
+        (error: unknown) => {
+          let error_state: State<NodeListPlusT> = {
+            is_loading: false,
+            loading_id: null,
+            error: error,
+            data: data.data
+          };
+          setData(error_state);
+        }
       );
 
       return () => {
@@ -102,7 +143,12 @@ type Args = {
 
 function Commander({node_id, onNodeClick}: Args) {
 
-  let [nodes_list, breadcrumb]: NodeListPlusT = useNodeListPlus(node_id);
+  let {
+    is_loading,
+    error,
+    loading_id,
+    data: [nodes_list, breadcrumb]
+  }: State<NodeListPlusT> = useNodeListPlus(node_id);
   let nodes;
 
   if (nodes_list) {
@@ -113,16 +159,23 @@ function Commander({node_id, onNodeClick}: Args) {
     } else {
       nodes = items.map((item: any) => {
         if (item.ctype == 'folder') {
-          return <Folder onClick={onNodeClick} node={item} />;
+          return <Folder onClick={onNodeClick} node={item} is_loading={loading_id == item.id} />;
         } else {
-          return <Document onClick={onNodeClick} node={item} />;
+          return <Document onClick={onNodeClick} node={item} is_loading={loading_id == item.id} />;
         }
       });
     }
 
     return (
       <>
-        {breadcrumb && <Breadcrumb path={breadcrumb.breadcrumb} onClick={onNodeClick} />}
+        {
+          breadcrumb
+            &&
+          <Breadcrumb
+            path={breadcrumb.breadcrumb}
+            onClick={onNodeClick}
+            is_loading={is_loading} />
+        }
         {nodes}
       </>
     )

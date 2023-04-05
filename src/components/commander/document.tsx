@@ -2,6 +2,7 @@
 type Args = {
   node: any;
   onClick: (node_id: string) => void;
+  is_loading: boolean;
 }
 
 function Document({node, onClick}: Args) {
