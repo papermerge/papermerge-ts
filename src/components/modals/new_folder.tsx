@@ -4,6 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import React, { ChangeEvent } from 'react';
+import { fetcher_post } from '@/utils/fetcher';
 
 
 type Args = {
@@ -12,9 +13,20 @@ type Args = {
   parent_id: string;
 }
 
+type CreateFolderType = {
+  title: string;
+  parent_id: string;
+  ctype: 'folder';
+}
+
 async function create_new_folder(title: string, parent_id: string) {
-  console.log("Sending request for creating new folder");
-  console.log(`title=${title} parent_id=${parent_id}`);
+  let data: CreateFolderType = {
+    'title': title,
+    'parent_id': parent_id,
+    'ctype': 'folder'
+  };
+
+  return fetcher_post<CreateFolderType>('/nodes/', data);
 }
 
 function validate_title(value: string): boolean {
@@ -44,7 +56,6 @@ const NewFolderModal = ({show, onHide, parent_id}: Args) => {
   }
 
   const handleSubmit = async () => {
-    console.log(`Form submitted ${title}`);
     let response = await create_new_folder(title, parent_id);
     onHide();
   }
