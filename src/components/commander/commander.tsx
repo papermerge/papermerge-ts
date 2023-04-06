@@ -143,8 +143,10 @@ type Args = {
   onNodeClick: (node_id: string) => void;
 }
 
+
 function Commander({node_id, onNodeClick}: Args) {
   const [ newFolderModalShow, setNewFolderModalShow ] = useState(false);
+  const [ selectedNodes, setSelectedNodes ] = useState([]);
   let {
     is_loading,
     error,
@@ -152,6 +154,10 @@ function Commander({node_id, onNodeClick}: Args) {
     data: [nodes_list, breadcrumb]
   }: State<NodeListPlusT> = useNodeListPlus(node_id);
   let nodes;
+
+  const onNodeSelect = (node_id: string, selected: boolean) => {
+    console.log(`Node ${node_id} selection changed; selected=${selected}`);
+  }
 
   if (nodes_list) {
     let items = nodes_list.items;
@@ -161,9 +167,19 @@ function Commander({node_id, onNodeClick}: Args) {
     } else {
       nodes = items.map((item: any) => {
         if (item.ctype == 'folder') {
-          return <Folder onClick={onNodeClick} node={item} is_loading={loading_id == item.id} />;
+          return <Folder
+            onClick={onNodeClick}
+            onSelect={onNodeSelect}
+            node={item}
+            is_loading={loading_id == item.id}
+          />;
         } else {
-          return <Document onClick={onNodeClick} node={item} is_loading={loading_id == item.id} />;
+          return <Document
+            onClick={onNodeClick}
+            onSelect={onNodeSelect}
+            node={item}
+            is_loading={loading_id == item.id}
+          />;
         }
       });
     }
