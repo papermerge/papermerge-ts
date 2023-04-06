@@ -5,6 +5,7 @@ import Breadcrumb from '../breadcrumb/breadcrumb';
 import Button from 'react-bootstrap/Button';
 import NewFolderModal from "../modals/new_folder";
 import Paginator from "../paginator";
+import Menu from "./menu";
 
 import { is_empty } from "@/utils";
 import { fetcher } from "@/utils/fetcher";
@@ -149,11 +150,6 @@ function Commander({node_id, page_number, onNodeClick, onPageClick}: Args) {
 
   if (nodes_list) {
     let items = nodes_list.items;
-    let paginator = <Paginator
-      num_pages={nodes_list.num_pages}
-      active={nodes_list.page_number}
-      onPageClick={onPageClick}
-    />
 
     if (is_empty(items)) {
       nodes = <EmptyFolder />;
@@ -180,10 +176,7 @@ function Commander({node_id, page_number, onNodeClick, onPageClick}: Args) {
     return (
       <>
         <div>
-          <Button variant='light'
-            onClick={() => setNewFolderModalShow(true)}>
-            <i className="bi bi-pencil"></i>
-          </Button>
+          <Menu onNewFolderClick={() => setNewFolderModalShow(true)} />
         </div>
         {
           breadcrumb
@@ -194,7 +187,11 @@ function Commander({node_id, page_number, onNodeClick, onPageClick}: Args) {
             is_loading={is_loading} />
         }
         {nodes}
-        {paginator}
+
+        <Paginator
+          num_pages={nodes_list.num_pages}
+          active={nodes_list.page_number}
+          onPageClick={onPageClick} />
 
         <div>
           <NewFolderModal

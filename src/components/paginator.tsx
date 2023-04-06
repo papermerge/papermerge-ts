@@ -9,6 +9,10 @@ type Args = {
 function Paginator({num_pages, active, onPageClick}: Args) {
   let items = [];
 
+  if (num_pages <= 1) {
+    return <></>;
+  }
+
   for (let number = 1; number <= num_pages; number++) {
     items.push(
       <Pagination.Item
