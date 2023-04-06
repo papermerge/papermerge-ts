@@ -132,10 +132,12 @@ type Args = {
   onPageClick: (page_number: number) => void;
 }
 
+type UUIDList = Array<string>;
+
 
 function Commander({node_id, page_number, onNodeClick, onPageClick}: Args) {
   const [ newFolderModalShow, setNewFolderModalShow ] = useState(false);
-  const [ selectedNodes, setSelectedNodes ] = useState([]);
+  const [ selectedNodes, setSelectedNodes ] = useState<UUIDList>([]);
   let {
     is_loading,
     error,
@@ -145,7 +147,15 @@ function Commander({node_id, page_number, onNodeClick, onPageClick}: Args) {
   let nodes;
 
   const onNodeSelect = (node_id: string, selected: boolean) => {
-    console.log(`Node ${node_id} selection changed; selected=${selected}`);
+    if (selected) {
+      setSelectedNodes(
+        [...selectedNodes, node_id]
+      );
+    } else {
+      setSelectedNodes(
+        selectedNodes.filter(uuid => uuid !== node_id)
+      );
+    }
   }
 
   if (nodes_list) {
@@ -176,7 +186,9 @@ function Commander({node_id, page_number, onNodeClick, onPageClick}: Args) {
     return (
       <>
         <div>
-          <Menu onNewFolderClick={() => setNewFolderModalShow(true)} />
+          <Menu
+            onNewFolderClick={() => setNewFolderModalShow(true)}
+            selected_nodes={selectedNodes} />
         </div>
         {
           breadcrumb
