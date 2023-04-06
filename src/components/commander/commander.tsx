@@ -1,14 +1,13 @@
-
-import Cookies from 'js-cookie';
-
 import Folder from "./folder";
 import Document from "./document";
 import EmptyFolder from "./empty_folder";
 import Breadcrumb from '../breadcrumb/breadcrumb';
 import Button from 'react-bootstrap/Button';
 import NewFolderModal from "../modals/new_folder";
+import Paginator from "../paginator";
 
 import { is_empty } from "@/utils";
+import { fetcher } from "@/utils/fetcher";
 import { useState, useEffect } from 'react';
 
 
@@ -48,20 +47,7 @@ type State<T> = {
   data: T;
 }
 
-
-export const fetcher = (url:string) => {
-  const token = Cookies.get('token');
-  const headers = {
-    'Authorization': `Bearer ${token}`,
-    'Content-Type': 'application/json'
-  };
-  let full_url = `http://localhost:8000${url}`;
-
-  return fetch(full_url, {headers: headers}).then(res => res.json());
-}
-
-
-function useNodeListPlus(node_id: string): State<NodeListPlusT>  {
+function useNodeListPlus(node_id: string, page_number: number): State<NodeListPlusT>  {
   const initial_state: State<NodeListPlusT> = {
     is_loading: true,
     loading_id: node_id,
@@ -88,7 +74,7 @@ function useNodeListPlus(node_id: string): State<NodeListPlusT>  {
 
     try {
       prom = Promise.all([
-        fetcher(`/nodes/${node_id}`),
+        fetcher(`/nodes/${node_id}?page_number=${page_number}`),
         fetcher(`/folders/${node_id}`)
       ]);
     } catch (error) {
@@ -133,18 +119,20 @@ function useNodeListPlus(node_id: string): State<NodeListPlusT>  {
         ignore = true;
       };
     }
-  }, [node_id]);
+  }, [node_id, page_number]);
 
   return data;
 }
 
 type Args = {
   node_id: string;
+  page_number: number;
   onNodeClick: (node_id: string) => void;
+  onPageClick: (page_number: number) => void;
 }
 
 
-function Commander({node_id, onNodeClick}: Args) {
+function Commander({node_id, page_number, onNodeClick, onPageClick}: Args) {
   const [ newFolderModalShow, setNewFolderModalShow ] = useState(false);
   const [ selectedNodes, setSelectedNodes ] = useState([]);
   let {
@@ -152,7 +140,7 @@ function Commander({node_id, onNodeClick}: Args) {
     error,
     loading_id,
     data: [nodes_list, breadcrumb]
-  }: State<NodeListPlusT> = useNodeListPlus(node_id);
+  }: State<NodeListPlusT> = useNodeListPlus(node_id, page_number);
   let nodes;
 
   const onNodeSelect = (node_id: string, selected: boolean) => {
@@ -161,6 +149,11 @@ function Commander({node_id, onNodeClick}: Args) {
 
   if (nodes_list) {
     let items = nodes_list.items;
+    let paginator = <Paginator
+      num_pages={nodes_list.num_pages}
+      active={nodes_list.page_number}
+      onPageClick={onPageClick}
+    />
 
     if (is_empty(items)) {
       nodes = <EmptyFolder />;
@@ -201,6 +194,7 @@ function Commander({node_id, onNodeClick}: Args) {
             is_loading={is_loading} />
         }
         {nodes}
+        {paginator}
 
         <div>
           <NewFolderModal

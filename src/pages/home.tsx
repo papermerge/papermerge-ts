@@ -9,6 +9,7 @@ import { useUser } from "@/contexts/user";
 function Home() {
   const user_context = useUser();
   const [ node_id, set_node_id ] = useState('');
+  const [ page_number, set_page_number ] = useState(1);
 
   useEffect( () => {
     if (!node_id) {
@@ -20,6 +21,10 @@ function Home() {
     set_node_id(node_id);
   }
 
+  const onPageClick = (num: number) => {
+    set_page_number(num);
+  }
+
   if (!node_id ) {
     return <div>Loading...{user_context.user?.username} {user_context.user?.home_folder_id}</div>;
   }
@@ -29,7 +34,11 @@ function Home() {
       <Head>
         <title>Home</title>
       </Head>
-      <Commander node_id={node_id} onNodeClick={onNodeClick} />
+      <Commander
+        node_id={node_id}
+        page_number={page_number}
+        onNodeClick={onNodeClick}
+        onPageClick={onPageClick} />
     </Layout>
   );
 }
