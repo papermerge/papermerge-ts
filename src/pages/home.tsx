@@ -10,6 +10,7 @@ function Home() {
   const user_context = useUser();
   const [ node_id, set_node_id ] = useState('');
   const [ page_number, set_page_number ] = useState(1);
+  const [ per_page, set_per_page ] = useState(5);
 
   useEffect( () => {
     if (!node_id) {
@@ -25,6 +26,10 @@ function Home() {
     set_page_number(num);
   }
 
+  const onPerPageChange = (num: number) => {
+    set_per_page(num);
+  }
+
   if (!node_id ) {
     return <div>Loading...{user_context.user?.username} {user_context.user?.home_folder_id}</div>;
   }
@@ -37,8 +42,10 @@ function Home() {
       <Commander
         node_id={node_id}
         page_number={page_number}
+        per_page={per_page}
         onNodeClick={onNodeClick}
-        onPageClick={onPageClick} />
+        onPageClick={onPageClick}
+        onPerPageChange={onPerPageChange} />
     </Layout>
   );
 }

@@ -1,4 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, ChangeEvent } from 'react';
+
+import Form from 'react-bootstrap/Form';
 
 import Folder from "./folder";
 import Document from "./document";
@@ -31,7 +33,7 @@ type State<T> = {
   data: T;
 }
 
-function useNodeListPlus(node_id: string, page_number: number): State<NodeListPlusT>  {
+function useNodeListPlus(node_id: string, page_number: number, per_page: number): State<NodeListPlusT>  {
   const initial_state: State<NodeListPlusT> = {
     is_loading: true,
     loading_id: node_id,
@@ -58,7 +60,7 @@ function useNodeListPlus(node_id: string, page_number: number): State<NodeListPl
 
     try {
       prom = Promise.all([
-        fetcher(`/nodes/${node_id}?page_number=${page_number}`),
+        fetcher(`/nodes/${node_id}?page_number=${page_number}&per_page=${per_page}`),
         fetcher(`/folders/${node_id}`)
       ]);
     } catch (error) {
@@ -103,7 +105,7 @@ function useNodeListPlus(node_id: string, page_number: number): State<NodeListPl
         ignore = true;
       };
     }
-  }, [node_id, page_number]);
+  }, [node_id, page_number, per_page]);
 
   return data;
 }
@@ -111,15 +113,17 @@ function useNodeListPlus(node_id: string, page_number: number): State<NodeListPl
 type Args = {
   node_id: string;
   page_number: number;
+  per_page: number,
   onNodeClick: (node_id: string) => void;
   onPageClick: (page_number: number) => void;
+  onPerPageChange: (per_page: number) => void;
 }
 
 type UUIDList = Array<string>;
 type NodeList = Array<NodeType>;
 
 
-function Commander({node_id, page_number, onNodeClick, onPageClick}: Args) {
+function Commander({node_id, page_number, per_page, onNodeClick, onPageClick, onPerPageChange}: Args) {
   const [ newFolderModalShow, setNewFolderModalShow ] = useState(false);
   const [ deleteNodesModalShow, setDeleteNodesModalShow ] = useState(false);
   const [ selectedNodes, setSelectedNodes ] = useState<UUIDList>([]);
@@ -129,7 +133,7 @@ function Commander({node_id, page_number, onNodeClick, onPageClick}: Args) {
     error,
     loading_id,
     data: [nodes_list, breadcrumb]
-  }: State<NodeListPlusT> = useNodeListPlus(node_id, page_number);
+  }: State<NodeListPlusT> = useNodeListPlus(node_id, page_number, per_page);
   let nodes;
 
   const onNodeSelect = (node_id: string, selected: boolean) => {
@@ -142,6 +146,11 @@ function Commander({node_id, page_number, onNodeClick, onPageClick}: Args) {
         selectedNodes.filter(uuid => uuid !== node_id)
       );
     }
+  }
+
+  const onPerPageValueChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    let new_value: number = parseInt(event.target.value);
+    onPerPageChange(new_value);
   }
 
   const onCreateNewFolder = (new_node: NodeType) => {
@@ -191,14 +200,21 @@ function Commander({node_id, page_number, onNodeClick, onPageClick}: Args) {
         }
       });
     }
-
     return (
-      <>
-        <div>
+      <div className="commander">
+        <div className='top-bar'>
           <Menu
             onNewFolderClick={() => setNewFolderModalShow(true)}
             onDeleteNodesClick={ () => setDeleteNodesModalShow(true) }
             selected_nodes={selectedNodes} />
+
+            <Form.Select onChange={onPerPageValueChange}>
+              <option value="5" selected>5</option>
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+            </Form.Select>
         </div>
         {
           breadcrumb
@@ -229,7 +245,7 @@ function Commander({node_id, page_number, onNodeClick, onPageClick}: Args) {
             onCancel={() => setDeleteNodesModalShow(false)}
             onSubmit={onDeleteNodes} />
         </div>
-      </>
+      </div>
     )
   }
 
