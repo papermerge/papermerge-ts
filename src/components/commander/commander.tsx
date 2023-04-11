@@ -1,36 +1,19 @@
+import { useState, useEffect } from 'react';
+
 import Folder from "./folder";
 import Document from "./document";
 import EmptyFolder from "./empty_folder";
 import Breadcrumb from '../breadcrumb/breadcrumb';
-import Button from 'react-bootstrap/Button';
 import NewFolderModal from "../modals/new_folder";
 import Paginator from "../paginator";
 import Menu from "./menu";
 
 import { is_empty } from "@/utils";
 import { fetcher } from "@/utils/fetcher";
-import { useState, useEffect } from 'react';
 
+import type { FolderType, NodeType } from '@/types';
+import DeleteNodesModal from '../modals/delete_nodes';
 
-type CType = "folder" | "document";
-
-type BreadcrumbItemType = [string, string];
-
-type BreadcrumbType = Array<BreadcrumbItemType>;
-
-
-type NodeType = {
-  id: string
-  ctype: CType;
-  parent_id: string | null;
-  title: string;
-  user_id: string;
-  update_at: string;
-}
-
-type FolderType = NodeType & {
-  breadcrumb: BreadcrumbType;
-}
 
 type NodeResultType = {
   items: NodeType[];
@@ -133,11 +116,14 @@ type Args = {
 }
 
 type UUIDList = Array<string>;
+type NodeList = Array<NodeType>;
 
 
 function Commander({node_id, page_number, onNodeClick, onPageClick}: Args) {
   const [ newFolderModalShow, setNewFolderModalShow ] = useState(false);
+  const [ deleteNodesModalShow, setDeleteNodesModalShow ] = useState(false);
   const [ selectedNodes, setSelectedNodes ] = useState<UUIDList>([]);
+  const [ nodesList, setNodesList ] = useState<NodeList>([]);
   let {
     is_loading,
     error,
@@ -158,8 +144,31 @@ function Commander({node_id, page_number, onNodeClick, onPageClick}: Args) {
     }
   }
 
+  const onCreateNewFolder = (new_node: NodeType) => {
+    setNodesList([
+      new_node,
+      ...nodesList
+    ]);
+    setNewFolderModalShow(false);
+  }
+
+  const onDeleteNodes = (node_ids: string[]) => {
+    let new_nodes = nodesList.filter(
+      node => node_ids.indexOf(node.id) == -1
+    );
+    setNodesList(new_nodes);
+    setDeleteNodesModalShow(false);
+    setSelectedNodes([]);
+  }
+
+  useEffect(() => {
+    if (nodes_list) {
+      setNodesList(nodes_list.items);
+    }
+  }, [nodes_list]);
+
   if (nodes_list) {
-    let items = nodes_list.items;
+    let items = nodesList;
 
     if (is_empty(items)) {
       nodes = <EmptyFolder />;
@@ -188,6 +197,7 @@ function Commander({node_id, page_number, onNodeClick, onPageClick}: Args) {
         <div>
           <Menu
             onNewFolderClick={() => setNewFolderModalShow(true)}
+            onDeleteNodesClick={ () => setDeleteNodesModalShow(true) }
             selected_nodes={selectedNodes} />
         </div>
         {
@@ -209,7 +219,15 @@ function Commander({node_id, page_number, onNodeClick, onPageClick}: Args) {
           <NewFolderModal
             show={newFolderModalShow}
             parent_id={node_id}
-            onHide={() => setNewFolderModalShow(false)} />
+            onCancel={() => setNewFolderModalShow(false)}
+            onSubmit={onCreateNewFolder} />
+        </div>
+        <div>
+          <DeleteNodesModal
+            show={deleteNodesModalShow}
+            node_ids={selectedNodes}
+            onCancel={() => setDeleteNodesModalShow(false)}
+            onSubmit={onDeleteNodes} />
         </div>
       </>
     )

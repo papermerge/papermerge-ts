@@ -17,3 +17,23 @@ export type UserContextType = {
 export type SimpleComponentArgs = {
   children: React.ReactNode;
 }
+
+export type CType = "folder" | "document";
+
+export type BreadcrumbItemType = [string, string];
+
+export type BreadcrumbType = Array<BreadcrumbItemType>;
+
+
+export type NodeType = {
+  id: string
+  ctype: CType;
+  parent_id: string | null;
+  title: string;
+  user_id: string;
+  update_at: string;
+}
+
+export type FolderType = NodeType & {
+  breadcrumb: BreadcrumbType;
+}
