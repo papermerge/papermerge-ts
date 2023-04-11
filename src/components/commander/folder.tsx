@@ -17,9 +17,9 @@ function Folder({node, onClick, onSelect, is_loading}: NodeArgsType) {
 
   return (
     <>
-      <div className="node folder">
+      <div key={node.id} className="node folder">
         {is_loading ? <Spinner />: <SpinnerPlaceholder />}
-        <div><Form.Check onChange={onselect} type="checkbox" /></div>
+        <div><Form.Check key={node.id} onChange={onselect} type="checkbox" /></div>
         <div className="icon folder"></div>
         <div className="title" onClick={onclick}>{node.title}</div>
       </div>
