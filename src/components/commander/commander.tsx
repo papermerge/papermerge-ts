@@ -6,7 +6,6 @@ import Folder from "./folder";
 import Document from "./document";
 import EmptyFolder from "./empty_folder";
 import Breadcrumb from '../breadcrumb/breadcrumb';
-import NewFolderModal from "../modals/new_folder";
 import Paginator from "../paginator";
 import Menu from "./menu";
 
@@ -15,6 +14,8 @@ import { fetcher } from "@/utils/fetcher";
 
 import type { FolderType, NodeType } from '@/types';
 import DeleteNodesModal from '../modals/delete_nodes';
+import NewFolderModal from "../modals/new_folder";
+import RenameModal from '../modals/rename';
 
 
 type NodeResultType = {
@@ -110,6 +111,29 @@ function useNodeListPlus(node_id: string, page_number: number, per_page: number)
   return data;
 }
 
+function get_old_title(arr: Array<string>, nodes_list: Array<NodeType>): string {
+  if (arr && arr.length > 0) {
+    const selected_id = arr[0];
+    const first_item = nodes_list.find((item: NodeType) => item.id === selected_id);
+
+    if (first_item) {
+      return first_item.title;
+    }
+  }
+
+  return '';
+}
+
+function node_is_selected(node_id: string, arr: Array<string>): boolean {
+  if (arr && arr.length > 0) {
+    const found_item = arr.find((uuid: string) => uuid === node_id);
+
+    return found_item != undefined;
+  }
+
+  return false;
+}
+
 type Args = {
   node_id: string;
   page_number: number;
@@ -125,6 +149,7 @@ type NodeList = Array<NodeType>;
 
 function Commander({node_id, page_number, per_page, onNodeClick, onPageClick, onPerPageChange}: Args) {
   const [ newFolderModalShow, setNewFolderModalShow ] = useState(false);
+  const [ renameModalShow, setRenameModalShow ] = useState(false);
   const [ deleteNodesModalShow, setDeleteNodesModalShow ] = useState(false);
   const [ selectedNodes, setSelectedNodes ] = useState<UUIDList>([]);
   const [ nodesList, setNodesList ] = useState<NodeList>([]);
@@ -161,6 +186,19 @@ function Commander({node_id, page_number, per_page, onNodeClick, onPageClick, on
     setNewFolderModalShow(false);
   }
 
+  const onRenameNode = (node: NodeType) => {
+    let new_nodes_list = nodesList.map((item: NodeType) => {
+      if (item.id === node.id) {
+        return node;
+      } else {
+        return item;
+      }
+    });
+
+    setNodesList(new_nodes_list);
+    setRenameModalShow(false);
+  }
+
   const onDeleteNodes = (node_ids: string[]) => {
     let new_nodes = nodesList.filter(
       node => node_ids.indexOf(node.id) == -1
@@ -174,7 +212,7 @@ function Commander({node_id, page_number, per_page, onNodeClick, onPageClick, on
     if (nodes_list) {
       setNodesList(nodes_list.items);
     }
-  }, [nodes_list]);
+  }, [nodes_list, page_number, per_page]);
 
   if (nodes_list) {
     let items = nodesList;
@@ -187,6 +225,7 @@ function Commander({node_id, page_number, per_page, onNodeClick, onPageClick, on
           return <Folder
             onClick={onNodeClick}
             onSelect={onNodeSelect}
+            is_selected={node_is_selected(item.id, selectedNodes)}
             node={item}
             is_loading={loading_id == item.id}
           />;
@@ -194,6 +233,7 @@ function Commander({node_id, page_number, per_page, onNodeClick, onPageClick, on
           return <Document
             onClick={onNodeClick}
             onSelect={onNodeSelect}
+            is_selected={node_is_selected(item.id, selectedNodes)}
             node={item}
             is_loading={loading_id == item.id}
           />;
@@ -205,6 +245,7 @@ function Commander({node_id, page_number, per_page, onNodeClick, onPageClick, on
         <div className='top-bar'>
           <Menu
             onNewFolderClick={() => setNewFolderModalShow(true)}
+            onRenameClick={() => setRenameModalShow(true)}
             onDeleteNodesClick={ () => setDeleteNodesModalShow(true) }
             selected_nodes={selectedNodes} />
 
@@ -237,6 +278,14 @@ function Commander({node_id, page_number, per_page, onNodeClick, onPageClick, on
             parent_id={node_id}
             onCancel={() => setNewFolderModalShow(false)}
             onSubmit={onCreateNewFolder} />
+        </div>
+        <div>
+          <RenameModal
+            show={renameModalShow}
+            node_id={selectedNodes[0]}
+            old_title={get_old_title(selectedNodes, nodesList)}
+            onCancel={() => setRenameModalShow(false)}
+            onSubmit={onRenameNode} />
         </div>
         <div>
           <DeleteNodesModal

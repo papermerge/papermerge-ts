@@ -2,11 +2,12 @@ import Button from 'react-bootstrap/Button';
 
 type Args = {
   onNewFolderClick: () => void;
+  onRenameClick: () => void;
   onDeleteNodesClick: () => void;
   selected_nodes: Array<string>;
 }
 
-function Menu({onNewFolderClick, onDeleteNodesClick, selected_nodes}: Args) {
+function Menu({onNewFolderClick, onDeleteNodesClick, onRenameClick, selected_nodes}: Args) {
 
   const new_folder = <Button variant='light' onClick={() => onNewFolderClick()}>
       <i className="bi bi-folder-plus"></i>
@@ -14,7 +15,7 @@ function Menu({onNewFolderClick, onDeleteNodesClick, selected_nodes}: Args) {
   const delete_nodes = <Button variant='danger' onClick={() => onDeleteNodesClick()}>
     <i className="bi bi-trash"></i>
   </Button>;
-  const rename_node = <Button variant='light'>
+  const rename_node = <Button variant='light' onClick={() => onRenameClick()}>
     <i className="bi bi-pencil"></i>
   </Button>;
 

@@ -39,6 +39,20 @@ async function fetcher_post<Input, Output>(url: string, data: Input): Promise<Ou
   ).then(res => res.json());
 }
 
+async function fetcher_patch<Input, Output>(url: string, data: Input): Promise<Output> {
+  const headers = get_default_headers();
+  let full_url = `http://localhost:8000${url}`;
+
+  return fetch(
+    full_url,
+    {
+      method: "patch",
+      headers: headers,
+      body: JSON.stringify(data)
+    }
+  ).then(res => res.json());
+}
+
 async function fetcher_delete<Input, Output>(url: string, data: Input): Promise<Output> {
   const headers = get_default_headers();
   let full_url = `http://localhost:8000${url}`;
@@ -53,4 +67,6 @@ async function fetcher_delete<Input, Output>(url: string, data: Input): Promise<
   ).then(res => res.json());
 }
 
-export { fetcher, fetcher_post, fetcher_delete };
+
+
+export { fetcher, fetcher_post, fetcher_patch, fetcher_delete };
