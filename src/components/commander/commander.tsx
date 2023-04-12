@@ -240,6 +240,7 @@ function Commander({node_id, page_number, per_page, onNodeClick, onPageClick, on
         }
       });
     }
+
     return (
       <div className="commander">
         <div className='top-bar'>

@@ -46,7 +46,7 @@ async function fetcher_patch<Input, Output>(url: string, data: Input): Promise<O
   return fetch(
     full_url,
     {
-      method: "patch",
+      method: "PATCH",
       headers: headers,
       body: JSON.stringify(data)
     }

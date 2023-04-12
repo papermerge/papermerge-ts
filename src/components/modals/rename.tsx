@@ -22,7 +22,7 @@ type RenameType = {
 
 async function rename_node(node_id: string, title: string): Promise<NodeType> {
   let data: RenameType = {
-    'title': title,
+    'title': title
   };
 
   return fetcher_patch<RenameType, NodeType>(`/nodes/${node_id}`, data);
