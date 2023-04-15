@@ -1,13 +1,27 @@
 import Button from 'react-bootstrap/Button';
+import UploadButton from '../upload_button';
+
+import type { NodeType } from '@/types';
 
 type Args = {
+  onCreateDocumentNode: (node: NodeType[]) => void;
   onNewFolderClick: () => void;
   onRenameClick: () => void;
   onDeleteNodesClick: () => void;
   selected_nodes: Array<string>;
+  node_id: string; // current node id
 }
 
-function Menu({onNewFolderClick, onDeleteNodesClick, onRenameClick, selected_nodes}: Args) {
+function Menu({
+  onCreateDocumentNode,
+  onNewFolderClick,
+  onDeleteNodesClick,
+  onRenameClick,
+  selected_nodes,
+  node_id
+}: Args) {
+
+  const upload = <UploadButton node_id={node_id} onCreateDocumentNode={onCreateDocumentNode} />;
 
   const new_folder = <Button variant='light' onClick={() => onNewFolderClick()}>
       <i className="bi bi-folder-plus"></i>
@@ -35,6 +49,7 @@ function Menu({onNewFolderClick, onDeleteNodesClick, onRenameClick, selected_nod
   }
 
   return <div>
+    {upload}
     {new_folder}
   </div>
 }

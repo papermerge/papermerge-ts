@@ -10,7 +10,7 @@ const COOKIE_NAME = 'token';
 
 function get_default_headers(cookie_name: string = COOKIE_NAME): DefaultHeaderType {
   const token = Cookies.get(cookie_name);
-  const headers = {
+  let headers = {
     'Authorization': `Bearer ${token}`,
     'Content-Type': 'application/json'
   };
@@ -39,8 +39,27 @@ async function fetcher_post<Input, Output>(url: string, data: Input): Promise<Ou
   ).then(res => res.json());
 }
 
+async function fetcher_upload(url: string, payload: File) {
+  let full_url = `http://localhost:8000${url}`;
+  let headers: any = get_default_headers();
+  const formData  = new FormData();
+
+  headers['Content-Type'] = 'multipart/form-data';
+
+  formData.append('file', payload, payload.name);
+
+  return fetch(
+    full_url,
+    {
+      method: "post",
+      headers: headers,
+      body: formData
+    }
+  );
+}
+
 async function fetcher_patch<Input, Output>(url: string, data: Input): Promise<Output> {
-  const headers = get_default_headers();
+  let headers = get_default_headers();
   let full_url = `http://localhost:8000${url}`;
 
   return fetch(
@@ -69,4 +88,10 @@ async function fetcher_delete<Input, Output>(url: string, data: Input): Promise<
 
 
 
-export { fetcher, fetcher_post, fetcher_patch, fetcher_delete };
+export {
+  fetcher,
+  fetcher_upload,
+  fetcher_post,
+  fetcher_patch,
+  fetcher_delete
+};

@@ -161,6 +161,11 @@ function Commander({node_id, page_number, per_page, onNodeClick, onPageClick, on
   }: State<NodeListPlusT> = useNodeListPlus(node_id, page_number, per_page);
   let nodes;
 
+  const onCreateDocumentModel = (new_nodes: NodeType[]) => {
+    /* Invoked when new document node was added */
+    setNodesList(nodesList.concat(new_nodes));
+  }
+
   const onNodeSelect = (node_id: string, selected: boolean) => {
     if (selected) {
       setSelectedNodes(
@@ -245,10 +250,12 @@ function Commander({node_id, page_number, per_page, onNodeClick, onPageClick, on
       <div className="commander">
         <div className='top-bar'>
           <Menu
+            onCreateDocumentNode={onCreateDocumentModel}
             onNewFolderClick={() => setNewFolderModalShow(true)}
             onRenameClick={() => setRenameModalShow(true)}
             onDeleteNodesClick={ () => setDeleteNodesModalShow(true) }
-            selected_nodes={selectedNodes} />
+            selected_nodes={selectedNodes}
+            node_id={node_id} />
 
             <Form.Select onChange={onPerPageValueChange}>
               <option value="5" selected>5</option>
