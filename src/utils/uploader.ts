@@ -18,10 +18,7 @@ type CreateDocumentType = {
 function upload_file(
   {file, node_id}: {file: File, node_id: string}
 ) {
-  fetcher_upload(
-    `/documents/${node_id}/upload/`,
-    file
-  );
+
 }
 
 
@@ -53,8 +50,9 @@ function uploader({files, node_id, onCreateDocumentNode}: UploaderArgs) {
       values.forEach(value => {
         let file: File|undefined = Array.from(files).find(item => item.name == value.title)
         if (file) {
-          console.log(`uploading file: ${file.name}`);
-          upload_file({file: file, node_id: value.id});
+          fetcher_upload(
+            `/documents/${value.id}/upload/`, file
+          );
         } else {
           console.log(`${value.title} NOT FOUND!`);
         }

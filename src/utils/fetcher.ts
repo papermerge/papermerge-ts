@@ -39,21 +39,21 @@ async function fetcher_post<Input, Output>(url: string, data: Input): Promise<Ou
   ).then(res => res.json());
 }
 
-async function fetcher_upload(url: string, payload: File) {
+async function fetcher_upload(url: string, file: File) {
   let full_url = `http://localhost:8000${url}`;
   let headers: any = get_default_headers();
-  const formData  = new FormData();
+  const form_data  = new FormData();
 
   headers['Content-Type'] = 'multipart/form-data';
 
-  formData.append('file', payload, payload.name);
+  form_data.append('file', file);
 
   return fetch(
     full_url,
     {
       method: "post",
       headers: headers,
-      body: formData
+      body: form_data
     }
   );
 }
