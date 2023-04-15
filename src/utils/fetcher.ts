@@ -44,9 +44,15 @@ async function fetcher_upload(url: string, file: File) {
   let headers: any = get_default_headers();
   const form_data  = new FormData();
 
-  headers['Content-Type'] = 'multipart/form-data';
-
   form_data.append('file', file);
+  // without following line of code server side returns
+  // 400 bad request "Missing boundary in multipart/form-data"
+  // as I learned here:
+  // https://stackoverflow.com/questions/39280438/fetch-missing-boundary-in-multipart-form-data-post
+  // the solution to the problem is to explicitly set Content-Type to undefined so that
+  // your browser or whatever client you're using can set it and add that boundary value
+  // in there for you. Disappointing but true.
+  delete headers['Content-Type'];
 
   return fetch(
     full_url,
